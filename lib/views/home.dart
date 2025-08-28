@@ -3,34 +3,34 @@ import 'package:get/get.dart';
 import '../controllers/auth_controller.dart';
 
 class HomeScreen extends StatelessWidget {
-  final AuthController _authController = Get.find<AuthController>();
-
-  HomeScreen({super.key});
+  final AuthController authController = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {
-    final user = _authController.user.value;
-
     return Scaffold(
-      appBar: AppBar(title: const Text("Home")),
+      appBar: AppBar(
+        title: Text("Home"),
+        actions: [
+          Row(
+            children: [
+              Text('Logout'),
+              IconButton(
+                icon: Icon(Icons.logout),
+                onPressed: () {
+                  authController.logout();
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
       body: Center(
-        child: user != null
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Welcome, ${user.name}!",
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text("Email: ${user.email}"),
-                  const SizedBox(height: 20),
-                  Text("Token: ${_authController.token.value}"),
-                ],
-              )
-            : const Text("No user data available"),
+        child: Obx(() {
+          final user = authController.user.value;
+          return user == null
+              ? const Text("No user logged in")
+              : Text("Welcome, ${user.name}");
+        }),
       ),
     );
   }

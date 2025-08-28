@@ -1,8 +1,8 @@
 // lib/repository/auth_repository.dart
 import 'package:dio/dio.dart';
-import '../apis/api_client.dart';
-import '../models/user_model.dart';
-import '../utils/api_error.dart';
+import '../../apis/api_client.dart';
+import '../../models/user_model.dart';
+import 'api_error.dart';
 
 class AuthRepository {
   final ApiClient apiClient = ApiClient();

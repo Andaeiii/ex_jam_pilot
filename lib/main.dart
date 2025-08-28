@@ -1,8 +1,7 @@
+import '../utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'views/login.dart';
-import 'views/home.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,11 +18,8 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Login App',
-      initialRoute: "/login",
-      getPages: [
-        GetPage(name: "/login", page: () => LoginScreen()),
-        GetPage(name: "/home", page: () => HomeScreen()),
-      ],
+      initialRoute: appRouteDefault,
+      getPages: appRoutes,
     );
   }
 }

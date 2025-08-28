@@ -51,10 +51,28 @@ class AuthController extends GetxController {
     }
   }
 
-  void logout() {
-    token.value = "";
-    user.value = null;
-    storage.remove("token"); // ✅ Clear token
-    Get.offAllNamed("/login");
+  Future<void> logout() async {
+    try {
+      isLoading.value = true;
+      await _authRepository.logout();
+    } catch (e) {
+      // API error not critical, just clear token anyway
+      print("Logout error: $e");
+    } finally {
+      // ✅ Always clear token
+      storage.remove("token");
+      user.value = null;
+
+      //log out and go back to login screen....
+      Get.offAllNamed("/login");
+      isLoading.value = false;
+    }
   }
+
+  // void logout() {
+  //   token.value = "";
+  //   user.value = null;
+  //   storage.remove("token"); // ✅ Clear token
+  //   Get.offAllNamed("/login");
+  // }
 }
