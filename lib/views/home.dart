@@ -11,16 +11,12 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("Home"),
         actions: [
-          Row(
-            children: [
-              Text('Logout'),
-              IconButton(
-                icon: Icon(Icons.logout),
-                onPressed: () {
-                  authController.logout();
-                },
-              ),
-            ],
+          TextButton.icon(
+            onPressed: () {
+              authController.logout();
+            },
+            icon: Icon(Icons.logout),
+            label: Text("Logout"),
           ),
         ],
       ),

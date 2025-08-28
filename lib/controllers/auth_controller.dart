@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '../models/user_model.dart';
 import '../repos/auth_repository.dart';
+import '../utils/helpers/SnackbarHelper.dart';
 
 class AuthController extends GetxController {
   final AuthRepository _authRepository = AuthRepository();
@@ -41,11 +42,13 @@ class AuthController extends GetxController {
       // ✅ Persist token
       storage.write("token", token.value);
 
-      print("Login Success: ${user.value?.email}");
+      // print("Login Success: ${user.value?.email}");
+      SnackbarHelper.showSuccess("Welcome ${user.value?.name}");
 
       Get.offAllNamed("/home");
     } catch (e) {
-      errorMessage.value = e.toString();
+      //errorMessage.value = e.toString();
+      SnackbarHelper.showError(e.toString());
     } finally {
       isLoading.value = false;
     }

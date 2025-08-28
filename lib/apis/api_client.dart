@@ -10,8 +10,8 @@ class ApiClient {
     : dio = Dio(
         BaseOptions(
           baseUrl: apiPATH_URL, // "http://10.0.2.2/exjam_api/public/api",
-          connectTimeout: const Duration(seconds: 10),
-          receiveTimeout: const Duration(seconds: 10),
+          connectTimeout: Duration(seconds: 10),
+          receiveTimeout: Duration(seconds: 10),
           headers: {"Accept": "application/json"},
         ),
       ) {
