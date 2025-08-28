@@ -1,9 +1,12 @@
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import '../models/user_model.dart';
 import '../repos/auth_repository.dart';
 
 class AuthController extends GetxController {
   final AuthRepository _authRepository = AuthRepository();
+
+  final storage = GetStorage(); // ✅ Storage instance
 
   var isLoading = false.obs;
   var errorMessage = "".obs;
@@ -11,6 +14,18 @@ class AuthController extends GetxController {
 
   // ✅ Keep user stored
   var user = Rxn<UserModel>();
+
+  @override
+  void onInit() {
+    super.onInit();
+
+    // ✅ Auto-load token if it exists
+    String? savedToken = storage.read("token");
+    if (savedToken != null) {
+      token.value = savedToken;
+      print("Loaded token from storage: $savedToken");
+    }
+  }
 
   Future<void> login(String email, String password) async {
     try {
@@ -23,14 +38,23 @@ class AuthController extends GetxController {
       token.value = result["token"];
       user.value = result["user"];
 
-      print("Login Success: ${user.value?.email}"); // debug log
+      // ✅ Persist token
+      storage.write("token", token.value);
 
-      // Navigate to Home on success
+      print("Login Success: ${user.value?.email}");
+
       Get.offAllNamed("/home");
     } catch (e) {
       errorMessage.value = e.toString();
     } finally {
       isLoading.value = false;
     }
+  }
+
+  void logout() {
+    token.value = "";
+    user.value = null;
+    storage.remove("token"); // ✅ Clear token
+    Get.offAllNamed("/login");
   }
 }

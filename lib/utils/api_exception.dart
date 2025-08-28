@@ -9,9 +9,9 @@ class AuthRepository {
 
   Future<Map<String, dynamic>> login(String email, String password) async {
     try {
-      final response = await apiClient.dio.post(
+      final response = await apiClient.dio.post( 
         "/login",
-        data: {"email": email, "password": password},
+        data: {"email": email, "password": password}
       );
 
       return {
