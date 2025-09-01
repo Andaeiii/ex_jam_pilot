@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/auth_controller.dart';
+import '../../controllers/auth_controller.dart';
 
 class LoginScreen extends StatelessWidget {
   final _emailController = TextEditingController();

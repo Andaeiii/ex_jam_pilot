@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/post_model.dart';
+import '../../models/post_model.dart';
 
 class SocialWallPage extends StatelessWidget {
   // Fake posts
@@ -140,8 +140,8 @@ class SocialWallPage extends StatelessWidget {
   Widget _buildPostCard(Post post) {
     return Card(
       margin: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      elevation: 3,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      elevation: 5,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

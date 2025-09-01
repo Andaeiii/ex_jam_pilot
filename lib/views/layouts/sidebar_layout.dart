@@ -1,13 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../components/sidebar_menu.dart';
-import '../controllers/SidebarController.dart';
-import '../controllers/auth_controller.dart';
-import '../views/social_wall.dart';
+import '../../components/sidebar_menu.dart';
+import '../../controllers/SidebarController.dart';
+import '../../controllers/auth_controller.dart';
 
-class HomeScreen extends StatelessWidget {
+class SideBarLayout extends StatelessWidget {
   final SidebarController sidebarController = Get.put(SidebarController());
   final AuthController authController = Get.find<AuthController>();
+
+  //layout properties...
+  final String title;
+  final Widget body;
+  // final Widget? sidebar;
+
+  SideBarLayout({
+    super.key,
+    required this.title,
+    required this.body,
+    //this.sidebar,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +143,7 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ),
 
-                        Expanded(flex: 1, child: SocialWallPage()),
+                        Expanded(flex: 1, child: body),
                       ],
                     ),
                   ),
@@ -147,6 +158,26 @@ class HomeScreen extends StatelessWidget {
             screenWidth: screenWidth,
             authController: authController,
           ),
+
+          // Dimmed overlay when sidebar is open // to close sidebar on tap
+          Obx(() {
+            return sidebarController.isSidebarOpen.value
+                ? Positioned(
+                    left: 0.7 * screenWidth,
+                    top: 0,
+                    bottom: 0,
+                    right: 0,
+                    child: GestureDetector(
+                      onTap: () {
+                        sidebarController.toggleSidebar();
+                      },
+                      child: Container(
+                        color: Colors.black.withOpacity(0.3), // Dimmed effect
+                      ),
+                    ),
+                  )
+                : SizedBox.shrink();
+          }),
         ],
       ),
     );
