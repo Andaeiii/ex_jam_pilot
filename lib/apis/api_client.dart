@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:get_storage/get_storage.dart';
-import './api_urls.dart';
+import './apiconfig.dart';
 
 class ApiClient {
   final Dio dio;
@@ -9,9 +9,9 @@ class ApiClient {
   ApiClient({String? baseUrl})
     : dio = Dio(
         BaseOptions(
-          baseUrl: appBaseURL, // "http://10.0.2.2/exjam_api/public/api",
-          connectTimeout: Duration(seconds: 10),
-          receiveTimeout: Duration(seconds: 10),
+          baseUrl: baseUrl ?? "http://$ipaddr/exjam_api/public/api",
+          connectTimeout: const Duration(seconds: 10),
+          receiveTimeout: const Duration(seconds: 10),
           headers: {"Accept": "application/json"},
         ),
       ) {
@@ -26,7 +26,7 @@ class ApiClient {
           return handler.next(options);
         },
         onError: (DioException e, handler) {
-          //print("API Error: ${e.response?.data ?? e.message}");
+          print("API Error: ${e.response?.data ?? e.message}");
           return handler.next(e);
         },
       ),

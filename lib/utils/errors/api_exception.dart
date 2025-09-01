@@ -1,25 +1,39 @@
-// lib/repository/auth_repository.dart
 import 'package:dio/dio.dart';
-import '../../apis/api_client.dart';
-import '../../models/user_model.dart';
-import 'api_error.dart';
 
-class AuthRepository {
-  final ApiClient apiClient = ApiClient();
+class ApiException implements Exception {
+  final String message;
 
-  Future<Map<String, dynamic>> login(String email, String password) async {
-    try {
-      final response = await apiClient.dio.post( 
-        "/login",
-        data: {"email": email, "password": password}
-      );
+  ApiException(this.message);
 
-      return {
-        "user": UserModel.fromJson(response.data["user"]),
-        "token": response.data["token"],
-      };
-    } on DioException catch (e) {
-      throw ApiError.fromDio(e); // Custom error handler
+  @override
+  String toString() => message;
+
+  // Factory method to parse Dio errors into readable messages
+  factory ApiException.fromDioError(DioException error) {
+    if (error.response != null) {
+      final data = error.response?.data;
+
+      // Try to extract common fields used by APIs (like Laravel, Node, etc.)
+      if (data is Map<String, dynamic>) {
+        if (data.containsKey("errors")) {
+          // Validation errors (Laravel-style)
+          final errors = (data["errors"] as Map).values
+              .expand((v) => v)
+              .join("\n");
+          return ApiException(errors);
+        }
+        if (data.containsKey("message")) {
+          return ApiException(data["message"]);
+        }
+        if (data.containsKey("error")) {
+          return ApiException(data["error"]);
+        }
+      }
+
+      return ApiException(data.toString());
     }
+
+    // No server response (timeout, DNS, no internet, etc.)
+    return ApiException("Network error: ${error.message}");
   }
 }
