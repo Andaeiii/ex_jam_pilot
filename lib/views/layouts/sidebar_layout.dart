@@ -100,50 +100,85 @@ class SideBarLayout extends StatelessWidget {
                     // color: Color.fromARGB(255, 225, 236, 241),
                     child: Column(
                       children: [
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: years.map((year) {
-                              return Container(
-                                decoration: BoxDecoration(
+                        Row(
+                          children: [
+                            Container(
+                              color: const Color.fromARGB(255, 1, 20, 53),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              child: Text(
+                                'SETS',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
                                   color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(
-                                    color: Color.fromARGB(255, 149, 206, 216),
-                                    width: 3,
-                                  ),
-                                  // gradient: LinearGradient(
-                                  //   colors: [
-                                  //     const Color.fromARGB(255, 255, 255, 255),
-                                  //     const Color.fromARGB(255, 88, 165, 196),
-                                  //   ],
-                                  //   begin: Alignment.topCenter,
-                                  //   end: Alignment.bottomCenter,
-                                  // ),
                                 ),
-                                margin: EdgeInsets.symmetric(
-                                  horizontal: 5,
-                                  vertical: 9,
+                              ),
+                            ),
+                            Expanded(
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: years.map((year) {
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                          color: Color.fromARGB(
+                                            255,
+                                            149,
+                                            206,
+                                            216,
+                                          ),
+                                          width: 3,
+                                        ),
+                                        // gradient: LinearGradient(
+                                        //   colors: [
+                                        //     const Color.fromARGB(255, 255, 255, 255),
+                                        //     const Color.fromARGB(255, 88, 165, 196),
+                                        //   ],
+                                        //   begin: Alignment.topCenter,
+                                        //   end: Alignment.bottomCenter,
+                                        // ),
+                                      ),
+                                      margin: EdgeInsets.symmetric(
+                                        horizontal: 5,
+                                        vertical: 9,
+                                      ),
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 2,
+                                        horizontal: 2,
+                                      ),
+                                      child: SizedBox(
+                                        width: 60,
+                                        height: 26,
+                                        child: Text(
+                                          '$year',
+                                          style: TextStyle(fontSize: 16),
+                                          textAlign:
+                                              TextAlign.center, // optional
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
                                 ),
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 2,
-                                  horizontal: 2,
-                                ),
-                                child: SizedBox(
-                                  width: 60,
-                                  height: 26,
-                                  child: Text(
-                                    '$year',
-                                    style: TextStyle(fontSize: 16),
-                                    textAlign: TextAlign.center, // optional
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                          ),
+                              ),
+                            ),
+                          ],
                         ),
 
-                        Expanded(flex: 1, child: body),
+                        Expanded(
+                          flex: 1,
+                          child: RefreshIndicator(
+                            onRefresh: () {
+                              return Future.delayed(Duration(seconds: 1));
+                            },
+                            child: body,
+                          ),
+                        ),
                       ],
                     ),
                   ),
