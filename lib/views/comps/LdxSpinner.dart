@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../controllers/LdxController.dart';
+import '../../controllers/ldx_controller.dart';
 
 class LdxSpinner extends StatelessWidget {
   final Widget child;

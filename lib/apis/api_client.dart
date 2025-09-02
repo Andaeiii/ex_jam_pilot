@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart' as dio;
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import '../controllers/LdxController.dart';
+import '../controllers/ldx_controller.dart';
 import './apiconfig.dart';
 
 class ApiClient {

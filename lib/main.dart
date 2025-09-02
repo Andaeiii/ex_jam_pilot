@@ -1,4 +1,4 @@
-import 'package:exjam_prj/controllers/LdxController.dart';
+import 'package:exjam_prj/controllers/ldx_controller.dart';
 
 import '../utils/routes.dart';
 import 'package:flutter/material.dart';

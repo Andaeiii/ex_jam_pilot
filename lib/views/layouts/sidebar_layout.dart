@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../components/sidebar_menu.dart';
-import '../../controllers/SidebarController.dart';
+import '../../controllers/sidebar_controller.dart';
 import '../../controllers/auth_controller.dart';
 
 class SideBarLayout extends StatelessWidget {

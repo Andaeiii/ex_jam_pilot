@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 
-class FormFields {
+class FormCtrls {
   static Widget inputField({
     required TextEditingController controller,
     required String labelText,
@@ -12,20 +12,48 @@ class FormFields {
     IconData? icon,
     Color? backgroundColor,
     Color? textColor,
+
+    // ✅ New fields
+    bool multiline = false,
+    int minLines = 1,
+    int maxLines = 1,
+    VoidCallback? onSend, // send button callback
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
         controller: controller,
         validator: validator,
-        keyboardType: keyboardType,
+        keyboardType: multiline ? TextInputType.multiline : keyboardType,
         obscureText: obscureText,
         style: TextStyle(color: textColor),
+        minLines: multiline ? minLines : 1,
+        maxLines: multiline ? maxLines : 1,
         decoration: InputDecoration(
           labelText: labelText,
           filled: backgroundColor != null,
           fillColor: backgroundColor,
-          prefixIcon: icon != null ? Icon(icon, color: textColor) : null,
+
+          // ✅ Align prefix icon to the top
+          prefixIcon: icon != null
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 0.0),
+                  child: Icon(icon, color: textColor),
+                )
+              : null,
+
+          // ✅ Align send button (suffix) to the top
+          suffixIcon: onSend != null
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 12.0),
+                  child: IconButton(
+                    icon: const Icon(Icons.send),
+                    color: textColor,
+                    onPressed: onSend,
+                  ),
+                )
+              : null,
+
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
         ),
       ),
@@ -44,7 +72,7 @@ class FormFields {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: DropdownButtonFormField<String>(
-        value: value,
+        initialValue: value,
         onChanged: onChanged,
         validator: validator,
         decoration: InputDecoration(
