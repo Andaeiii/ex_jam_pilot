@@ -13,7 +13,7 @@ class AuthRepository {
       });
 
       return {
-        "user": UserModel.fromJson(response.data["user"]),
+        "user": User.fromJson(response.data["user"]),
         "token": response.data["token"],
       };
     } on DioException catch (e) {
@@ -26,10 +26,10 @@ class AuthRepository {
     }
   }
 
-  Future<UserModel> getProfile() async {
+  Future<User> getProfile() async {
     try {
       final response = await apiClient.get("/profile");
-      return UserModel.fromJson(response.data["user"]);
+      return User.fromJson(response.data["user"]);
     } on DioException catch (e) {
       final errorMessage =
           e.response?.data["message"] ??

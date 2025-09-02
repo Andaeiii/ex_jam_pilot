@@ -1,139 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../../controllers/posts_controller.dart';
 import '../../models/post_model.dart';
 
 class SocialWallPage extends StatelessWidget {
-  // Fake posts
-  final List<Post> posts = [
-    Post(
-      userName: "John Doe",
-      userAvatar: "https://i.pravatar.cc/150?img=3",
-      timeAgo: "2h",
-      type: "text",
-      content: "Just finished a great Flutter project 🚀!",
-    ),
-    Post(
-      userName: "Jane Smith",
-      userAvatar: "https://i.pravatar.cc/150?img=5",
-      timeAgo: "3h",
-      type: "image",
-      content: "Beautiful sunset I captured today 🌇",
-      imageUrl: "https://picsum.photos/400/250",
-    ),
-    Post(
-      userName: "Michael Lee",
-      userAvatar: "https://i.pravatar.cc/150?img=8",
-      timeAgo: "5h",
-      type: "mixed",
-      content: "Check out my new car! 🏎️",
-      imageUrl: "https://picsum.photos/500/300",
-    ),
-    Post(
-      userName: "Alice Green",
-      userAvatar: "https://i.pravatar.cc/150?img=9",
-      timeAgo: "1d",
-      type: "text",
-      content: "Life is beautiful when you code Flutter 💙",
-    ),
-    Post(
-      userName: "John Doe",
-      userAvatar: "https://i.pravatar.cc/150?img=3",
-      timeAgo: "2h",
-      type: "text",
-      content: "Just finished a great Flutter project 🚀!",
-    ),
-    Post(
-      userName: "Jane Smith",
-      userAvatar: "https://i.pravatar.cc/150?img=5",
-      timeAgo: "3h",
-      type: "image",
-      content: "Beautiful sunset I captured today 🌇",
-      imageUrl: "https://picsum.photos/400/250",
-    ),
-    Post(
-      userName: "Michael Lee",
-      userAvatar: "https://i.pravatar.cc/150?img=8",
-      timeAgo: "5h",
-      type: "mixed",
-      content: "Check out my new car! 🏎️",
-      imageUrl: "https://picsum.photos/500/300",
-    ),
-    Post(
-      userName: "Alice Green",
-      userAvatar: "https://i.pravatar.cc/150?img=9",
-      timeAgo: "1d",
-      type: "text",
-      content: "Life is beautiful when you code Flutter 💙",
-    ),
-    Post(
-      userName: "John Doe",
-      userAvatar: "https://i.pravatar.cc/150?img=3",
-      timeAgo: "2h",
-      type: "text",
-      content: "Just finished a great Flutter project 🚀!",
-    ),
-    Post(
-      userName: "Jane Smith",
-      userAvatar: "https://i.pravatar.cc/150?img=5",
-      timeAgo: "3h",
-      type: "image",
-      content: "Beautiful sunset I captured today 🌇",
-      imageUrl: "https://picsum.photos/400/250",
-    ),
-    Post(
-      userName: "Michael Lee",
-      userAvatar: "https://i.pravatar.cc/150?img=8",
-      timeAgo: "5h",
-      type: "mixed",
-      content: "Check out my new car! 🏎️",
-      imageUrl: "https://picsum.photos/500/300",
-    ),
-    Post(
-      userName: "Alice Green",
-      userAvatar: "https://i.pravatar.cc/150?img=9",
-      timeAgo: "1d",
-      type: "text",
-      content: "Life is beautiful when you code Flutter 💙",
-    ),
-    Post(
-      userName: "John Doe",
-      userAvatar: "https://i.pravatar.cc/150?img=3",
-      timeAgo: "2h",
-      type: "text",
-      content: "Just finished a great Flutter project 🚀!",
-    ),
-    Post(
-      userName: "Jane Smith",
-      userAvatar: "https://i.pravatar.cc/150?img=5",
-      timeAgo: "3h",
-      type: "image",
-      content: "Beautiful sunset I captured today 🌇",
-      imageUrl: "https://picsum.photos/400/250",
-    ),
-    Post(
-      userName: "Michael Lee",
-      userAvatar: "https://i.pravatar.cc/150?img=8",
-      timeAgo: "5h",
-      type: "mixed",
-      content: "Check out my new car! 🏎️",
-      imageUrl: "https://picsum.photos/500/300",
-    ),
-    Post(
-      userName: "Alice Green",
-      userAvatar: "https://i.pravatar.cc/150?img=9",
-      timeAgo: "1d",
-      type: "text",
-      content: "Life is beautiful when you code Flutter 💙",
-    ),
-  ];
+  final PostsController controller = Get.put(PostsController());
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: posts.length,
-      itemBuilder: (context, index) {
-        final post = posts[index];
-        return _buildPostCard(post);
-      },
+    return Scaffold(
+      appBar: AppBar(title: Text("Social Wall")),
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (controller.errorMessage.isNotEmpty) {
+          return Center(child: Text("Error: ${controller.errorMessage}"));
+        }
+
+        if (controller.posts.isEmpty) {
+          return const Center(child: Text("No posts available"));
+        }
+
+        return ListView.builder(
+          itemCount: controller.posts.length,
+          itemBuilder: (context, index) {
+            final post = controller.posts[index];
+            return _buildPostCard(post);
+          },
+        );
+      }),
     );
   }
 
@@ -148,13 +45,13 @@ class SocialWallPage extends StatelessWidget {
           // Post header (avatar + name + time)
           ListTile(
             leading: CircleAvatar(
-              backgroundImage: NetworkImage(post.userAvatar),
+              backgroundImage: NetworkImage(post.user.avatar),
             ),
             title: Text(
-              post.userName,
+              post.user.firstname + " " + post.user.lastname,
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            subtitle: Text(post.timeAgo),
+            subtitle: Text("2hr ago"),
             trailing: Icon(Icons.more_horiz),
           ),
 
@@ -173,9 +70,12 @@ class SocialWallPage extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildActionButton(Icons.thumb_up_alt_outlined, "Like"),
-                _buildActionButton(Icons.mode_comment_outlined, "Comment"),
-                _buildActionButton(Icons.share_outlined, "Share"),
+                _buildActionButton(Icons.thumb_up_alt_outlined, "Like", () {}),
+                _buildActionButton(Icons.mode_comment_outlined, "Comment", () {
+                  Get.toNamed('/comments', arguments: {"postId": post.id});
+                  // print("Comment on post ${post.id}");
+                }),
+                _buildActionButton(Icons.share_outlined, "Share", () {}),
               ],
             ),
           ),
@@ -227,9 +127,13 @@ class SocialWallPage extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButton(IconData icon, String label) {
+  Widget _buildActionButton(
+    IconData icon,
+    String label,
+    VoidCallback onPressed,
+  ) {
     return TextButton.icon(
-      onPressed: () {},
+      onPressed: onPressed,
       icon: Icon(icon, size: 20, color: Colors.grey[700]),
       label: Text(label, style: TextStyle(color: Colors.grey[700])),
     );

@@ -12,7 +12,7 @@ class AuthController extends GetxController {
   var token = "".obs;
 
   // ✅ Keep user stored
-  var user = Rxn<UserModel>();
+  var user = Rxn<User>();
 
   @override
   void onInit() {

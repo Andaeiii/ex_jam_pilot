@@ -1,43 +1,55 @@
-class UserModel {
+class User {
   final int id;
   final String email;
-  final int squadronId;
+  final int? squadronId;
   final String servNum;
-  final String? emailVerifiedAt;
-  final String createdAt;
-  final String updatedAt;
+  final DateTime? emailVerifiedAt;
+  final String? rememberToken;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
-  UserModel({
+  User({
     required this.id,
     required this.email,
-    required this.squadronId,
+    this.squadronId,
     required this.servNum,
     this.emailVerifiedAt,
-    required this.createdAt,
-    required this.updatedAt,
+    this.rememberToken,
+    this.createdAt,
+    this.updatedAt,
   });
 
-  factory UserModel.fromJson(Map<String, dynamic> json) {
-    return UserModel(
-      id: json['id'] ?? 0,
-      email: json['email'] ?? '',
-      squadronId: json['squadron_id'] ?? 0,
-      servNum: json['serv_num'] ?? '',
-      emailVerifiedAt: json['email_verified_at'],
-      createdAt: json['created_at'] ?? '',
-      updatedAt: json['updated_at'] ?? '',
+  /// Factory constructor to create User from JSON
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'],
+      email: json['email'],
+      squadronId: json['squadron_id'],
+      servNum: json['serv_num'],
+      emailVerifiedAt: json['email_verified_at'] != null
+          ? DateTime.tryParse(json['email_verified_at'])
+          : null,
+      rememberToken: json['remember_token'],
+      createdAt: json['created_at'] != null
+          ? DateTime.tryParse(json['created_at'])
+          : null,
+      updatedAt: json['updated_at'] != null
+          ? DateTime.tryParse(json['updated_at'])
+          : null,
     );
   }
 
+  /// Convert User back to JSON (for sending to API)
   Map<String, dynamic> toJson() {
     return {
-      "id": id,
-      "email": email,
-      "squadron_id": squadronId,
-      "serv_num": servNum,
-      "email_verified_at": emailVerifiedAt,
-      "created_at": createdAt,
-      "updated_at": updatedAt,
+      'id': id,
+      'email': email,
+      'squadron_id': squadronId,
+      'serv_num': servNum,
+      'email_verified_at': emailVerifiedAt?.toIso8601String(),
+      'remember_token': rememberToken,
+      'created_at': createdAt?.toIso8601String(),
+      'updated_at': updatedAt?.toIso8601String(),
     };
   }
 }
