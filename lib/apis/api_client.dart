@@ -2,7 +2,7 @@ import 'package:dio/dio.dart' as dio;
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '../controllers/ldx_controller.dart';
-import './apiconfig.dart';
+import 'config.dart';
 
 class ApiClient {
   final dio.Dio dioClient;
@@ -12,8 +12,8 @@ class ApiClient {
     : dioClient = dio.Dio(
         dio.BaseOptions(
           baseUrl: baseUrl ?? "http://$ipaddr/exjam_api/public/api",
-          connectTimeout: const Duration(seconds: 10),
-          receiveTimeout: const Duration(seconds: 10),
+          connectTimeout: Duration(seconds: 10),
+          receiveTimeout: Duration(seconds: 10),
           headers: {"Accept": "application/json"},
         ),
       ) {

@@ -2,36 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/posts_controller.dart';
 import '../../models/post_model.dart';
+import '../../apis/config.dart';
 
 class SocialWallPage extends StatelessWidget {
   final PostsController controller = Get.put(PostsController());
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Social Wall")),
-      body: Obx(() {
-        if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
-        }
+    return Obx(() {
+      //var allposts = controller.posts;
 
-        if (controller.errorMessage.isNotEmpty) {
-          return Center(child: Text("Error: ${controller.errorMessage}"));
-        }
+      if (controller.isLoading.value) {
+        return const Center(child: CircularProgressIndicator());
+      }
 
-        if (controller.posts.isEmpty) {
-          return const Center(child: Text("No posts available"));
-        }
+      if (controller.errorMessage.isNotEmpty) {
+        return Center(child: Text("Error: ${controller.errorMessage}"));
+      }
 
-        return ListView.builder(
-          itemCount: controller.posts.length,
-          itemBuilder: (context, index) {
-            final post = controller.posts[index];
-            return _buildPostCard(post);
-          },
-        );
-      }),
-    );
+      if (controller.posts.isEmpty) {
+        return const Center(child: Text("No posts available"));
+      }
+
+      return ListView.builder(
+        itemCount: controller.posts.length,
+        itemBuilder: (context, index) {
+          final post = controller.posts[index];
+          return _buildPostCard(post);
+        },
+      );
+    });
   }
 
   Widget _buildPostCard(Post post) {
@@ -56,13 +56,14 @@ class SocialWallPage extends StatelessWidget {
           ),
 
           // Post content
-          if (post.type == "text") _buildTextContent(post),
-          if (post.type == "image") _buildImageContent(post),
-          if (post.type == "mixed") _buildMixedContent(post),
+          // if (post.postType?.title == "text")
+          //_buildTextContent(post),
+          _buildImageContent(post),
+          if (post.postType?.title == "mixed") _buildMixedContent(post),
 
           // Action buttons (like, comment, share)
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
+            padding: EdgeInsets.symmetric(horizontal: 8),
             child: Divider(),
           ),
           Padding(
@@ -87,8 +88,8 @@ class SocialWallPage extends StatelessWidget {
 
   Widget _buildTextContent(Post post) {
     return Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: Text(post.content, style: TextStyle(fontSize: 16)),
+      padding: EdgeInsets.all(12.0),
+      child: Text(post.content ?? '', style: TextStyle(fontSize: 16)),
     );
   }
 
@@ -96,15 +97,18 @@ class SocialWallPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (post.content.isNotEmpty)
+        if (post.content?.isNotEmpty ?? false)
           Padding(
             padding: const EdgeInsets.all(12.0),
-            child: Text(post.content, style: TextStyle(fontSize: 16)),
+            child: Text(post.content ?? '', style: TextStyle(fontSize: 16)),
           ),
-        if (post.imageUrl != null)
+        if (post.imagePath != null)
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: Image.network(post.imageUrl!, fit: BoxFit.cover),
+            child: Image.network(
+              "$assetURL/${post.imagePath!}",
+              fit: BoxFit.cover,
+            ),
           ),
       ],
     );
@@ -116,12 +120,12 @@ class SocialWallPage extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.all(12.0),
-          child: Text(post.content, style: TextStyle(fontSize: 16)),
+          child: Text(post.content ?? '', style: TextStyle(fontSize: 16)),
         ),
-        if (post.imageUrl != null)
+        if (post.imagePath != null)
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: Image.network(post.imageUrl!, fit: BoxFit.cover),
+            child: Image.network(post.imagePath!, fit: BoxFit.cover),
           ),
       ],
     );
