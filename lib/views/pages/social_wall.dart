@@ -1,3 +1,4 @@
+import 'package:exjam_prj/views/comps/NetworkImgLdr.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/posts_controller.dart';
@@ -86,12 +87,12 @@ class SocialWallPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTextContent(Post post) {
-    return Padding(
-      padding: EdgeInsets.all(12.0),
-      child: Text(post.content ?? '', style: TextStyle(fontSize: 16)),
-    );
-  }
+  // Widget _buildTextContent(Post post) {
+  //   return Padding(
+  //     padding: EdgeInsets.all(12.0),
+  //     child: Text(post.content ?? '', style: TextStyle(fontSize: 16)),
+  //   );
+  // }
 
   Widget _buildImageContent(Post post) {
     return Column(
@@ -105,8 +106,8 @@ class SocialWallPage extends StatelessWidget {
         if (post.imagePath != null)
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: Image.network(
-              "$assetURL/${post.imagePath!}",
+            child: NetworkImgLdr(
+              imageUrl: "$assetURL/${post.imagePath!}",
               fit: BoxFit.cover,
             ),
           ),
@@ -125,7 +126,9 @@ class SocialWallPage extends StatelessWidget {
         if (post.imagePath != null)
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: Image.network(post.imagePath!, fit: BoxFit.cover),
+            child: NetworkImgLdr(imageUrl: post.imagePath!, fit: BoxFit.cover),
+
+            //Image.network(post.imagePath!, fit: BoxFit.cover),
           ),
       ],
     );
