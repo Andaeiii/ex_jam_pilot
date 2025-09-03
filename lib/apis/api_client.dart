@@ -69,7 +69,7 @@ class ApiClient {
     void Function(int sent, int total)? onSendProgress,
   }) async {
     final formData = dio.FormData.fromMap({
-      "images": [
+      "images[]": [
         for (var i = 0; i < images.length; i++)
           await dio.MultipartFile.fromFile(
             images[i].path,

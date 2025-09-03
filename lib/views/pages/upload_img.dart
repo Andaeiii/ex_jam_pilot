@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'dart:io';
 import '../../controllers/UploadController.dart';
 
 class UploadImgs extends StatelessWidget {
@@ -20,6 +19,16 @@ class UploadImgs extends StatelessWidget {
             Text("Add Image(s)"),
           ],
         ),
+        actions: [
+          Directionality(
+            textDirection: TextDirection.rtl, // right-to-left layout
+            child: TextButton.icon(
+              onPressed: _controller.pickImages,
+              icon: Icon(Icons.add),
+              label: Text("Add"),
+            ),
+          ),
+        ],
       ),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -96,6 +105,29 @@ class UploadImgs extends StatelessWidget {
                 );
               }),
             ),
+
+            SizedBox(height: 20),
+
+            Obx(() {
+              if (_controller.isUploading.value) {
+                return Column(
+                  children: [
+                    LinearProgressIndicator(
+                      value: _controller.uploadProgress.value, // 0.0 → 1.0
+                      backgroundColor: Colors.grey[300],
+                      color: Colors.blue,
+                      minHeight: 6,
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      "${(_controller.uploadProgress.value * 100).toStringAsFixed(0)}%",
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                  ],
+                );
+              }
+              return SizedBox.shrink();
+            }),
 
             SizedBox(height: 20),
 
