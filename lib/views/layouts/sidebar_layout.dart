@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../components/sidebar_menu.dart';
 import '../../controllers/sidebar_controller.dart';
 import '../../controllers/auth_controller.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class SideBarLayout extends StatelessWidget {
   final SidebarController sidebarController = Get.put(SidebarController());
@@ -170,15 +171,7 @@ class SideBarLayout extends StatelessWidget {
                           ],
                         ),
 
-                        Expanded(
-                          flex: 1,
-                          child: RefreshIndicator(
-                            onRefresh: () {
-                              return Future.delayed(Duration(seconds: 1));
-                            },
-                            child: body,
-                          ),
-                        ),
+                        Expanded(flex: 1, child: body),
                       ],
                     ),
                   ),
@@ -207,12 +200,39 @@ class SideBarLayout extends StatelessWidget {
                         sidebarController.toggleSidebar();
                       },
                       child: Container(
-                        color: Colors.black.withOpacity(0.3), // Dimmed effect
+                        color: Color.fromARGB(
+                          255,
+                          255,
+                          255,
+                          255,
+                        ).withOpacity(0.7), // Dimmed effect
                       ),
                     ),
                   )
                 : SizedBox.shrink();
           }),
+        ],
+      ),
+      floatingActionButton: SpeedDial(
+        icon: Icons.add,
+        activeIcon: Icons.close,
+        backgroundColor: Colors.blue,
+        children: [
+          SpeedDialChild(
+            child: Icon(Icons.event_available_outlined),
+            label: "Event",
+            onTap: () {},
+          ),
+          SpeedDialChild(
+            child: Icon(Icons.browse_gallery),
+            label: "Photo(s)",
+            onTap: () {},
+          ),
+          SpeedDialChild(
+            child: Icon(Icons.post_add),
+            label: "Post",
+            onTap: () {},
+          ),
         ],
       ),
     );
