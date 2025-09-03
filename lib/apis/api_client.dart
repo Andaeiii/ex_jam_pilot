@@ -36,7 +36,7 @@ class ApiClient {
 
         onError: (dio.DioException e, handler) {
           Get.find<LdxController>().hide(); /////////////////// hide loader.
-          print("API Error: ${e.response?.data ?? e.message}");
+          //print("API Error: ${e.response?.data ?? e.message}");
           return handler.next(e);
         },
       ),

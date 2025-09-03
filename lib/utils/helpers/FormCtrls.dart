@@ -12,6 +12,7 @@ class FormCtrls {
     IconData? icon,
     Color? backgroundColor,
     Color? textColor,
+    bool useBorder = true,
 
     // ✅ New fields
     bool multiline = false,
@@ -34,7 +35,25 @@ class FormCtrls {
           filled: backgroundColor != null,
           fillColor: backgroundColor,
 
-          // ✅ Align prefix icon to the top
+          // ✅ FIX: Use InputBorder.none instead of null
+          border: useBorder
+              ? OutlineInputBorder(borderRadius: BorderRadius.circular(8.0))
+              : InputBorder.none, // ← This is the fix
+          // ✅ Also set enabledBorder and focusedBorder for consistency
+          enabledBorder: useBorder
+              ? OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                  borderSide: BorderSide(color: Colors.grey.shade400),
+                )
+              : InputBorder.none,
+
+          focusedBorder: useBorder
+              ? OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                  borderSide: BorderSide(color: Colors.blue.shade400),
+                )
+              : InputBorder.none,
+
           prefixIcon: icon != null
               ? Padding(
                   padding: const EdgeInsets.only(top: 0.0),
@@ -42,7 +61,6 @@ class FormCtrls {
                 )
               : null,
 
-          // ✅ Align send button (suffix) to the top
           suffixIcon: onSend != null
               ? Padding(
                   padding: const EdgeInsets.only(top: 12.0),
@@ -53,8 +71,6 @@ class FormCtrls {
                   ),
                 )
               : null,
-
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
         ),
       ),
     );
@@ -70,7 +86,7 @@ class FormCtrls {
     Color? textColor,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: EdgeInsets.symmetric(vertical: 8.0),
       child: DropdownButtonFormField<String>(
         initialValue: value,
         onChanged: onChanged,
