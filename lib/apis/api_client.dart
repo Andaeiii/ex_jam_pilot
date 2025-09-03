@@ -13,8 +13,9 @@ class ApiClient {
     : dioClient = dio.Dio(
         dio.BaseOptions(
           baseUrl: baseUrl ?? "http://$ipaddr/exjam_api/public/api",
-          connectTimeout: Duration(seconds: 10),
-          receiveTimeout: Duration(seconds: 10),
+          connectTimeout: Duration(seconds: 30), // connection timeout
+          receiveTimeout: Duration(seconds: 60), // response time
+          sendTimeout: Duration(seconds: 60), // for uploads
           headers: {"Accept": "application/json"},
         ),
       ) {
@@ -76,6 +77,7 @@ class ApiClient {
             filename: "image_$i.jpg",
           ),
       ],
+      "userId": 1, //storage.read("user_id").toString() ,
     });
 
     return await dioClient.post(
