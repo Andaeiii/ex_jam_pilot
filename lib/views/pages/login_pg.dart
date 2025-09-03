@@ -74,7 +74,7 @@ class LoginPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(height: 30),
+                    SizedBox(height: 10),
                     FadeInUp(
                       duration: Duration(milliseconds: 1700),
                       child: Container(
@@ -146,11 +146,44 @@ class LoginPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 30),
+
                     FadeInUp(
-                      duration: Duration(milliseconds: 1700),
-                      child: Center(
-                        child: TextButton(
+                      duration: Duration(milliseconds: 1900),
+                      child: _authController.isLoading.value
+                          ? Center(
+                              child: LoadingAnimationWidget.staggeredDotsWave(
+                                color: Color.fromRGBO(49, 39, 79, 1),
+                                size: 50,
+                              ),
+                            )
+                          : MaterialButton(
+                              onPressed: () {
+                                _authController.login(
+                                  _emailController.text.trim(),
+                                  _passwdController.text.trim(),
+                                );
+                              },
+                              color: Color.fromRGBO(49, 39, 79, 1),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                              height: 50,
+                              child: Center(
+                                child: Text(
+                                  "Ex-Jam Login",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                    ),
+
+                    SizedBox(height: 5),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
                           onPressed: () {},
                           child: Text(
                             "Forgot Password?",
@@ -159,52 +192,16 @@ class LoginPage extends StatelessWidget {
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                    SizedBox(height: 30),
-                    FadeInUp(
-                      duration: Duration(milliseconds: 1900),
-                      child: MaterialButton(
-                        onPressed: () {},
-                        color: Color.fromRGBO(49, 39, 79, 1),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        height: 50,
-                        child: Center(
+                        TextButton(
+                          onPressed: () {},
                           child: Text(
-                            "Login",
-                            style: TextStyle(color: Colors.white),
+                            "visit Ex-Jam.com",
+                            style: TextStyle(
+                              color: Color.fromRGBO(49, 39, 79, .6),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                    SizedBox(height: 30),
-                    FadeInUp(
-                      duration: Duration(milliseconds: 2000),
-                      child: Center(
-                        child: TextButton(
-                          onPressed: _authController.isLoading.value
-                              ? null
-                              : () {
-                                  _authController.login(
-                                    _emailController.text.trim(),
-                                    _passwdController.text.trim(),
-                                  );
-                                },
-                          child: _authController.isLoading.value
-                              ? LoadingAnimationWidget.staggeredDotsWave(
-                                  color: Colors.blue,
-                                  size: 30,
-                                )
-                              : Text(
-                                  "Login Ex-Jam",
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(49, 39, 79, .6),
-                                  ),
-                                ),
-                        ),
-                      ),
+                      ],
                     ),
                   ],
                 ),
