@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dio/dio.dart' as dio;
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -61,5 +62,26 @@ class ApiClient {
   /// ✅ DELETE request
   Future<dio.Response> delete(String endpoint) async {
     return await dioClient.delete(endpoint);
+  }
+
+  Future<dio.Response> uploadImages(
+    List<File> images, {
+    void Function(int sent, int total)? onSendProgress,
+  }) async {
+    final formData = dio.FormData.fromMap({
+      "images": [
+        for (var i = 0; i < images.length; i++)
+          await dio.MultipartFile.fromFile(
+            images[i].path,
+            filename: "image_$i.jpg",
+          ),
+      ],
+    });
+
+    return await dioClient.post(
+      "/upload",
+      data: formData,
+      onSendProgress: onSendProgress,
+    );
   }
 }
