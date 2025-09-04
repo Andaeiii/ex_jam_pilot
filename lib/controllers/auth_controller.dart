@@ -37,6 +37,7 @@ class AuthController extends GetxController {
 
       // ✅ Persist token
       storage.write("token", token.value);
+      storage.write('userId', user.value?.id);
       Get.offAllNamed("/home");
     } catch (e) {
       errorMessage.value = e.toString();

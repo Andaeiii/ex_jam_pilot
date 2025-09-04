@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import '../../components/sidebar_menu.dart';
 import '../../controllers/sidebar_controller.dart';
 import '../../controllers/auth_controller.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import '../comps/FlyOutMenu.dart';
 
 class SideBarLayout extends StatelessWidget {
   final SidebarController sidebarController = Get.put(SidebarController());
@@ -213,28 +213,7 @@ class SideBarLayout extends StatelessWidget {
           }),
         ],
       ),
-      floatingActionButton: SpeedDial(
-        icon: Icons.add,
-        activeIcon: Icons.close,
-        backgroundColor: Colors.blue,
-        children: [
-          SpeedDialChild(
-            child: Icon(Icons.event_available_outlined),
-            label: "Event",
-            onTap: () {},
-          ),
-          SpeedDialChild(
-            child: Icon(Icons.browse_gallery),
-            label: "Photo(s)",
-            onTap: () {},
-          ),
-          SpeedDialChild(
-            child: Icon(Icons.post_add),
-            label: "Post",
-            onTap: () {},
-          ),
-        ],
-      ),
+      floatingActionButton: FlyOutMenu(),
     );
   }
 }

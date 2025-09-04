@@ -66,6 +66,7 @@ class ApiClient {
   }
 
   Future<dio.Response> uploadImages(
+    String albumText,
     List<File> images, {
     void Function(int sent, int total)? onSendProgress,
   }) async {
@@ -77,7 +78,8 @@ class ApiClient {
             filename: "image_$i.jpg",
           ),
       ],
-      "userId": 1, //storage.read("user_id").toString() ,
+      "title": albumText,
+      "userId": storage.read("userId").toString(),
     });
 
     return await dioClient.post(

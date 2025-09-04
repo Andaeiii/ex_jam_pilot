@@ -8,7 +8,14 @@ import '../../controllers/auth_controller.dart';
 class LoginPage extends StatelessWidget {
   final _emailController = TextEditingController();
   final _passwdController = TextEditingController();
-  final AuthController _authController = Get.put(AuthController());
+  final AuthController _authController = Get.find<AuthController>();
+
+  void loginuser() {
+    _authController.login(
+      _emailController.text.trim(),
+      _passwdController.text.trim(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -158,12 +165,7 @@ class LoginPage extends StatelessWidget {
                               ),
                             )
                           : MaterialButton(
-                              onPressed: () {
-                                _authController.login(
-                                  _emailController.text.trim(),
-                                  _passwdController.text.trim(),
-                                );
-                              },
+                              onPressed: loginuser,
                               color: Color.fromRGBO(49, 39, 79, 1),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50),

@@ -10,6 +10,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init(); // ✅ Initialize GetStorage
 
+  // Register lazily with fenix so it's recreated if disposed
+  Get.lazyPut(() => AuthController(), fenix: true);
+
   runApp(const MyApp());
 }
 

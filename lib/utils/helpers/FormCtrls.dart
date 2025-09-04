@@ -17,7 +17,7 @@ class FormCtrls {
     // ✅ New fields
     bool multiline = false,
     int minLines = 1,
-    int maxLines = 1,
+    int? maxLines, // allow null (infinite expansion)
     VoidCallback? onSend, // send button callback
   }) {
     return Padding(
@@ -28,18 +28,22 @@ class FormCtrls {
         keyboardType: multiline ? TextInputType.multiline : keyboardType,
         obscureText: obscureText,
         style: TextStyle(color: textColor),
+
+        // ✅ Safe handling of min/max lines
         minLines: multiline ? minLines : 1,
-        maxLines: multiline ? maxLines : 1,
+        maxLines: multiline
+            ? (maxLines ?? null) // allow unlimited if null
+            : 1,
+
         decoration: InputDecoration(
           labelText: labelText,
           filled: backgroundColor != null,
           fillColor: backgroundColor,
 
-          // ✅ FIX: Use InputBorder.none instead of null
           border: useBorder
               ? OutlineInputBorder(borderRadius: BorderRadius.circular(8.0))
-              : InputBorder.none, // ← This is the fix
-          // ✅ Also set enabledBorder and focusedBorder for consistency
+              : InputBorder.none,
+
           enabledBorder: useBorder
               ? OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0),

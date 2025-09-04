@@ -46,10 +46,15 @@ class SocialWallPage extends StatelessWidget {
           // Post header (avatar + name + time)
           ListTile(
             leading: CircleAvatar(
-              backgroundImage: NetworkImage(post.user.avatar),
+              backgroundImage: post.user != null
+                  ? NetworkImage(post.user!.avatar)
+                  : AssetImage("assets/images/default_avatar.png")
+                        as ImageProvider,
             ),
             title: Text(
-              post.user.firstname + " " + post.user.lastname,
+              post.user != null
+                  ? "${post.user!.firstname ?? ''} ${post.user!.lastname ?? ''}"
+                  : "Unknown User",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             subtitle: Text("2hr ago"),

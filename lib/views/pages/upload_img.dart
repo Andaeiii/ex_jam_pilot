@@ -1,9 +1,20 @@
+import 'package:exjam_prj/utils/helpers/FormCtrls.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/UploadController.dart';
 
 class UploadImgs extends StatelessWidget {
   final UploadController _controller = Get.put(UploadController());
+  final TextEditingController _gallTitle = TextEditingController();
+
+  void validateAndUpload() {
+    var _gtxt = _gallTitle.text.trim();
+    if (_gtxt.isEmpty) {
+      Get.snackbar("Error", "Title field cannot be empty");
+    } else {
+      _controller.uploadImages(_gtxt);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -11,8 +22,15 @@ class UploadImgs extends StatelessWidget {
       appBar: AppBar(
         title: Row(
           children: [
+            IconButton(
+              icon: const Icon(
+                Icons.arrow_back,
+                color: Color.fromARGB(255, 71, 71, 71),
+              ),
+              onPressed: () => Get.toNamed('/home'),
+            ),
             Icon(
-              Icons.image,
+              Icons.photo_album,
               color: Color.fromARGB(255, 71, 71, 71),
             ), // your icon
             SizedBox(width: 8),
@@ -36,6 +54,17 @@ class UploadImgs extends StatelessWidget {
         child: Column(
           children: [
             // Image Grid Preview
+            Container(
+              alignment: Alignment.centerLeft,
+              child: FormCtrls.inputField(
+                controller: _gallTitle,
+                labelText: "Enter Title for Gallery",
+                multiline: true,
+                minLines: 1, // starts with 1 line
+                maxLines: null, // grows automatically
+                icon: Icons.title,
+              ),
+            ),
             Expanded(
               child: Obx(() {
                 if (_controller.selectedImages.isEmpty) {
@@ -142,7 +171,7 @@ class UploadImgs extends StatelessWidget {
 
             // Upload Button
             ElevatedButton.icon(
-              onPressed: _controller.uploadImages,
+              onPressed: validateAndUpload,
               icon: Icon(Icons.cloud_upload),
               label: Text("Upload All"),
               style: ElevatedButton.styleFrom(

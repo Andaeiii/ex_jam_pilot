@@ -4,10 +4,10 @@ import 'package:get/get.dart';
 import '../views/pages/login.dart';
 import '../views/pages/home.dart';
 
-const String appRouteDefault = "/test";
+const String appRouteDefault = "/login";
 final List<GetPage<dynamic>> appRoutes = [
   GetPage(name: "/login", page: () => LoginPage()),
   GetPage(name: "/home", page: () => HomeScreen()),
   GetPage(name: "/comments", page: () => CommentsPage()),
-  GetPage(name: "/test", page: () => UploadImgs()),
+  GetPage(name: "/photos", page: () => UploadImgs()),
 ];

@@ -18,7 +18,7 @@ class UploadController extends GetxController {
     }
   }
 
-  Future<void> uploadImages() async {
+  Future<void> uploadImages(titletxt) async {
     if (selectedImages.isEmpty) {
       Get.snackbar("Error", "Please select images first.");
       return;
@@ -31,6 +31,7 @@ class UploadController extends GetxController {
       //print(selectedImages);
 
       final response = await apiClient.uploadImages(
+        titletxt,
         selectedImages,
         onSendProgress: (sent, total) {
           uploadProgress.value = sent / total;
@@ -39,6 +40,8 @@ class UploadController extends GetxController {
 
       if (response.statusCode == 200) {
         Get.snackbar("Success", "Images uploaded successfully!");
+        //Get.back(); // Go back to the previous screen
+        Get.offAllNamed('/home');
       } else {
         print('error' + response.statusMessage.toString());
       }
