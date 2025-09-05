@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:exjam_prj/models/post_gallery.dart';
+
 import 'post_types_model.dart';
 import 'postuser_model.dart';
 
@@ -54,8 +58,12 @@ class Post {
       is_gallery: (json['is_gallery'] == 1 || json['is_gallery'] == true),
       is_event: (json['is_event'] == 1 || json['is_event'] == true),
 
-      galleryInfo: json['galleryInfo'] != null ? 'info' : null,
-      eventInfo: json['galleryInfo'] != null ? 'info' : null,
+      // ✅ handle galleryInfo properly
+      galleryInfo: json['galleryInfo'].toString(),
+
+      eventInfo: json['eventInfo'] != null
+          ? jsonDecode(json['eventInfo'])
+          : null,
 
       createdAt: json['created_at'] != null
           ? DateTime.tryParse(json['created_at'])

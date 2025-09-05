@@ -1,9 +1,15 @@
 import 'package:exjam_prj/views/comps/NetworkImgLdr.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+
+import 'package:photo_view/photo_view_gallery.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/posts_controller.dart';
 import '../../models/post_model.dart';
 import '../../apis/config.dart';
+import 'dart:convert';
+
+import 'SlideShowPg.dart';
 
 class SocialWallPage extends StatelessWidget {
   final PostsController controller = Get.put(PostsController());
@@ -67,6 +73,11 @@ class SocialWallPage extends StatelessWidget {
           _buildImageContent(post),
           if (post.postType?.title == "mixed") _buildMixedContent(post),
 
+          if (post.galleryInfo != '') _buildGallery(post.galleryInfo),
+          //     post.galleryInfo is List &&
+          //     post.galleryInfo.length > 0)
+          //   _buildMasonry(post),
+
           // Action buttons (like, comment, share)
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8),
@@ -92,12 +103,12 @@ class SocialWallPage extends StatelessWidget {
     );
   }
 
-  // Widget _buildTextContent(Post post) {
-  //   return Padding(
-  //     padding: EdgeInsets.all(12.0),
-  //     child: Text(post.content ?? '', style: TextStyle(fontSize: 16)),
-  //   );
-  // }
+  Widget _buildTextContent(Post post) {
+    return Padding(
+      padding: EdgeInsets.all(12.0),
+      child: Text(post.galleryInfo ?? '', style: TextStyle(fontSize: 16)),
+    );
+  }
 
   Widget _buildImageContent(Post post) {
     return Column(
@@ -150,4 +161,58 @@ class SocialWallPage extends StatelessWidget {
       label: Text(label, style: TextStyle(color: Colors.grey[700])),
     );
   }
+}
+
+/// Your gallery widget
+Widget _buildGallery(String jsonString) {
+  // Decode JSON into a list
+  final List<dynamic> photos = jsonDecode(jsonString);
+  final List<String> urls = photos
+      .map<String>((photo) => photo['url'] as String)
+      .toList();
+
+  return MasonryGridView.count(
+    crossAxisCount: 2, // number of columns
+    mainAxisSpacing: 8,
+    crossAxisSpacing: 8,
+    shrinkWrap: true,
+    physics: const NeverScrollableScrollPhysics(), // use with scroll parent
+    itemCount: urls.length,
+    itemBuilder: (context, index) {
+      final url = urls[index];
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) =>
+                  SlideshowGallery(photos: urls, initialIndex: index),
+            ),
+          );
+        },
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Image.network(
+            url,
+            fit: BoxFit.cover,
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+              return Container(
+                height: 150,
+                color: Colors.grey[200],
+                child: const Center(child: CircularProgressIndicator()),
+              );
+            },
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                height: 150,
+                color: Colors.grey[300],
+                child: const Icon(Icons.broken_image, size: 50),
+              );
+            },
+          ),
+        ),
+      );
+    },
+  );
 }
