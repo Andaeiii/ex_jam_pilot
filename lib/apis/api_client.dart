@@ -65,6 +65,7 @@ class ApiClient {
     return await dioClient.delete(endpoint);
   }
 
+  /// ✅ UPLOAD multiple images with additional data
   Future<dio.Response> uploadImages(
     String albumText,
     List<File> images, {

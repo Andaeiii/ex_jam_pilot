@@ -1,7 +1,6 @@
 import 'package:exjam_prj/views/comps/NetworkImgLdr.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
-import 'package:photo_view/photo_view_gallery.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/posts_controller.dart';
@@ -9,7 +8,7 @@ import '../../models/post_model.dart';
 import '../../apis/config.dart';
 import 'dart:convert';
 
-import 'SlideShowPg.dart';
+import '../imgComps/SlideShowPg.dart';
 
 class SocialWallPage extends StatelessWidget {
   final PostsController controller = Get.put(PostsController());
@@ -20,7 +19,7 @@ class SocialWallPage extends StatelessWidget {
       //var allposts = controller.posts;
 
       if (controller.isLoading.value) {
-        return const Center(child: CircularProgressIndicator());
+        return Center(child: CircularProgressIndicator());
       }
 
       if (controller.errorMessage.isNotEmpty) {
@@ -28,7 +27,7 @@ class SocialWallPage extends StatelessWidget {
       }
 
       if (controller.posts.isEmpty) {
-        return const Center(child: Text("No posts available"));
+        return Center(child: Text("No posts available"));
       }
 
       return ListView.builder(
@@ -59,12 +58,48 @@ class SocialWallPage extends StatelessWidget {
             ),
             title: Text(
               post.user != null
-                  ? "${post.user!.firstname ?? ''} ${post.user!.lastname ?? ''}"
+                  ? "${post.user!.firstname} ${post.user!.lastname}"
                   : "Unknown User",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             subtitle: Text("2hr ago"),
-            trailing: Icon(Icons.more_horiz),
+            trailing: PopupMenuButton<String>(
+              icon: Icon(Icons.more_horiz),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              onSelected: (value) {
+                if (value == 'edit') {
+                  // handle edit
+                  print('Edit selected');
+                } else if (value == 'delete') {
+                  // handle delete
+                  controller.deletePost(post.id);
+                }
+              },
+              itemBuilder: (BuildContext context) => [
+                PopupMenuItem(
+                  value: 'edit',
+                  child: Row(
+                    children: const [
+                      Icon(Icons.edit, color: Colors.blueAccent),
+                      SizedBox(width: 10),
+                      Text('Edit'),
+                    ],
+                  ),
+                ),
+                PopupMenuItem(
+                  value: 'delete',
+                  child: Row(
+                    children: const [
+                      Icon(Icons.delete, color: Colors.redAccent),
+                      SizedBox(width: 10),
+                      Text('Delete'),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
 
           // Post content
@@ -91,7 +126,6 @@ class SocialWallPage extends StatelessWidget {
                 _buildActionButton(Icons.thumb_up_alt_outlined, "Like", () {}),
                 _buildActionButton(Icons.mode_comment_outlined, "Comment", () {
                   Get.toNamed('/comments', arguments: {"postId": post.id});
-                  // print("Comment on post ${post.id}");
                 }),
                 _buildActionButton(Icons.share_outlined, "Share", () {}),
               ],
@@ -122,10 +156,7 @@ class SocialWallPage extends StatelessWidget {
         if (post.imagePath != null)
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: NetworkImgLdr(
-              imageUrl: "$assetURL/${post.imagePath!}",
-              fit: BoxFit.cover,
-            ),
+            child: NetworkImgLdr(imageUrl: post.imagePath!, fit: BoxFit.cover),
           ),
       ],
     );
@@ -168,7 +199,7 @@ Widget _buildGallery(String jsonString) {
   // Decode JSON into a list
   final List<dynamic> photos = jsonDecode(jsonString);
   final List<String> urls = photos
-      .map<String>((photo) => photo['url'] as String)
+      .map<String>((photo) => '$serverURL${photo['fld']}') //as string
       .toList();
 
   return MasonryGridView.count(
@@ -176,7 +207,7 @@ Widget _buildGallery(String jsonString) {
     mainAxisSpacing: 8,
     crossAxisSpacing: 8,
     shrinkWrap: true,
-    physics: const NeverScrollableScrollPhysics(), // use with scroll parent
+    physics: NeverScrollableScrollPhysics(), // use with scroll parent
     itemCount: urls.length,
     itemBuilder: (context, index) {
       final url = urls[index];
@@ -185,8 +216,10 @@ Widget _buildGallery(String jsonString) {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) =>
-                  SlideshowGallery(photos: urls, initialIndex: index),
+              // builder: (_) => SlideshowGallery(photos: urls, initialIndex: index),
+              builder: (_) {
+                return SlideshowGallery(photos: urls, initialIndex: index);
+              },
             ),
           );
         },

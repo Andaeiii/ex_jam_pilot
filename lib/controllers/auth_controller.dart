@@ -50,6 +50,8 @@ class AuthController extends GetxController {
     token.value = "";
     user.value = null;
     storage.remove("token"); // ✅ Clear token
+    //Get.deleteAll();
     Get.offAllNamed("/login");
+    //Get.offAll(() => LoginPage());
   }
 }

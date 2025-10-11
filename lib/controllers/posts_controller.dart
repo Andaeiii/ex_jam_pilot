@@ -31,4 +31,22 @@ class PostsController extends GetxController {
       isLoading(false);
     }
   }
+
+  Future<void> refreshPosts() async {
+    await fetchPosts();
+  }
+
+  Future<void> deletePost(int postId) async {
+    try {
+      isLoading(true);
+      await _postsRepository.deletePost(postId);
+      posts.removeWhere((post) => post.id == postId); // Update observable list
+      Get.snackbar("Success", "Post deleted successfully");
+    } catch (e) {
+      errorMessage.value = e.toString();
+      Get.snackbar("Error", errorMessage.value);
+    } finally {
+      isLoading(false);
+    }
+  }
 }

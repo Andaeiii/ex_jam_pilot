@@ -9,7 +9,7 @@ class PostsRepository {
     try {
       final response = await apiClient.get("/posts");
 
-     // print('pr +' + response.toString());
+      // print('pr +' + response.toString());
 
       final List<Post> posts = (response.data['data'] as List)
           .map((json) => Post.fromJson(json))
@@ -23,5 +23,9 @@ class PostsRepository {
           "Failed to fetch posts";
       throw Exception(errorMessage);
     }
+  }
+
+  Future<void> deletePost(int postId) async {
+    await apiClient.delete('/posts/$postId');
   }
 }

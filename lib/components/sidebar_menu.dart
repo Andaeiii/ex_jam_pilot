@@ -76,7 +76,9 @@ class SideBarMENU extends StatelessWidget {
                 _buildMenuItem(Icons.person, 'My Profile', () {}),
                 _buildMenuItem(Icons.settings, 'Settings', () {}),
                 SizedBox(height: 40),
-                _buildMenuItem(Icons.logout, 'Logout', () {}),
+                _buildMenuItem(Icons.logout, 'Logout', () {
+                  authController.logout();
+                }),
               ],
             ),
           ),

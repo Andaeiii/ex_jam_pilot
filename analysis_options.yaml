@@ -16,6 +16,7 @@ analyzer:
     non_constant_identifier_names: ignore
     use_super_parameters: ignore
     deprecated_member_use: ignore
+    unused_element: ignore
 include: package:flutter_lints/flutter.yaml
 
 linter:
