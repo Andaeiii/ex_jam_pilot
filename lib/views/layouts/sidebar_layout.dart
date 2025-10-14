@@ -25,6 +25,8 @@ class SideBarLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
 
+    final _slideTime = Duration(milliseconds: 300);
+
     //generate list...
     final years = List.generate(2020 - 1999 + 1, (index) => 1999 + index);
 
@@ -34,7 +36,7 @@ class SideBarLayout extends StatelessWidget {
           // Main Page
           Obx(() {
             return AnimatedContainer(
-              duration: Duration(milliseconds: 300),
+              duration: _slideTime,
               transform: Matrix4.translationValues(
                 sidebarController.isSidebarOpen.value ? 0.7 * screenWidth : 0,
                 0,
@@ -49,7 +51,7 @@ class SideBarLayout extends StatelessWidget {
                   appBar: AppBar(
                     title: Obx(
                       () => sidebarController.isSidebarOpen.value
-                          ? const SizedBox.shrink() // blank when sidebar open
+                          ? SizedBox.shrink() // blank when sidebar open
                           : SizedBox(
                               height: 40,
                               child: TextField(
@@ -87,7 +89,7 @@ class SideBarLayout extends StatelessWidget {
                     ),
                     actions: [
                       IconButton(
-                        icon: const Icon(Icons.add),
+                        icon: Icon(Icons.add),
                         onPressed: () {
                           print("Add button tapped!");
                         },
@@ -189,7 +191,8 @@ class SideBarLayout extends StatelessWidget {
 
           // Dimmed overlay when sidebar is open // to close sidebar on tap
           Obx(() {
-            return sidebarController.isSidebarOpen.value
+            return sidebarController.isSidebarOpen.value &&
+                    sidebarController.showOverlay.value
                 ? Positioned(
                     left: 0.7 * screenWidth,
                     top: 0,
@@ -202,9 +205,9 @@ class SideBarLayout extends StatelessWidget {
                       child: Container(
                         color: Color.fromARGB(
                           255,
-                          255,
-                          255,
-                          255,
+                          4,
+                          17,
+                          41,
                         ).withOpacity(0.7), // Dimmed effect
                       ),
                     ),

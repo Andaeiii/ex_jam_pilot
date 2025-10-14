@@ -1,12 +1,34 @@
+import 'package:exjam_prj/models/comment_model.dart';
 import 'package:exjam_prj/utils/helpers/FormBtns.dart';
 import 'package:exjam_prj/utils/helpers/FormCtrls.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/comments_controller.dart';
 
-class CommentsPage extends StatelessWidget {
-  final CommentController commentController = Get.put(CommentController());
+class CommentsPage extends StatefulWidget {
+  final int postId; //  receive post ID
+  const CommentsPage({super.key, required this.postId});
+
+  @override
+  State<CommentsPage> createState() => _CommentsPageState();
+}
+
+class _CommentsPageState extends State<CommentsPage> {
+  late CommentController commentController;
   final TextEditingController textController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    commentController = Get.put(CommentController());
+    commentController.fetchComments(widget.postId); // 👇 fetch comments
+  }
+
+  @override
+  void dispose() {
+    Get.delete<CommentController>();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,12 +52,15 @@ class CommentsPage extends StatelessWidget {
                     maxLines: 5,
                   ),
                 ),
-                SizedBox(width: 8),
+                SizedBox(width: 3),
                 FormBtns.fab(
                   icon: Icons.send,
                   backgroundColor: Colors.blueAccent,
                   onPressed: () {
-                    commentController.addComment(textController.text);
+                    commentController.addComment(
+                      textController.text,
+                      widget.postId,
+                    );
                     textController.clear();
                   },
                 ),
@@ -52,18 +77,15 @@ class CommentsPage extends StatelessWidget {
               return RefreshIndicator(
                 onRefresh: () async {
                   // Simulate a refresh action
-                  await Future.delayed(Duration(seconds: 1));
+                  //await Future.delayed(Duration(seconds: 1));
+                  commentController.fetchComments(widget.postId);
                 },
                 child: ListView.builder(
                   physics: AlwaysScrollableScrollPhysics(), // refreshes always
                   itemCount: commentController.comments.length,
                   itemBuilder: (context, index) {
-                    final comment = commentController.comments[index];
-                    return commentItem(
-                      comment: comment,
-                      user: "Abdulrahamen Kazeem Wahab  ${index + 1}",
-                      time: "just now",
-                    );
+                    var comment = commentController.comments[index];
+                    return commentItem(comment);
                   },
                 ),
               );
@@ -75,11 +97,9 @@ class CommentsPage extends StatelessWidget {
   }
 }
 
-Widget commentItem({
-  required String comment,
-  required String user,
-  required String time,
-}) {
+Widget commentItem(Comment c) {
+  print('Comment ID: ${c.id}, Content: ${c.content}');
+
   return Padding(
     padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
     child: Row(
@@ -101,19 +121,19 @@ Widget commentItem({
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(user, style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(c.fullname, style: TextStyle(fontWeight: FontWeight.bold)),
               SizedBox(height: 4),
-              Text(comment, style: TextStyle(fontSize: 14)),
+              Text(c.content ?? '', style: TextStyle(fontSize: 14)),
               SizedBox(height: 4),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    time,
+                    c.time ?? '',
                     style: TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                   Text(
-                    'Red Squadron',
+                    c.oldSquadron ?? '',
                     style: TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                 ],

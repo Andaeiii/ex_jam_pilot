@@ -19,13 +19,11 @@ class NetworkImgLdr extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String imgfile = '$assetURL/uploads/posts/$imageUrl';
-    print('Loading image from: $imgfile');
     return SizedBox(
-      width: width ?? double.infinity, // 👈 take parent width if not given
-      height: height, // 👈 height is optional (can stretch inside parent)
+      width: width ?? double.infinity,
+      height: height,
       child: Image.network(
-        imgfile,
+        '$assetURL/$imageUrl',
         fit: fit,
         loadingBuilder:
             (

@@ -1,5 +1,5 @@
 import 'package:exjam_prj/views/pages/Comments.dart';
-import 'package:exjam_prj/views/pages/profile_pg.dart';
+import 'package:exjam_prj/views/pages/galleryPage.dart';
 import 'package:exjam_prj/views/pages/upload_img.dart';
 import 'package:get/get.dart';
 import '../views/pages/login.dart';
@@ -10,8 +10,23 @@ const String appRouteDefault = "/login";
 final List<GetPage<dynamic>> appRoutes = [
   GetPage(name: "/login", page: () => LoginPage()),
   GetPage(name: "/home", page: () => HomeScreen()),
-  GetPage(name: "/comments", page: () => CommentsPage()),
+
   GetPage(name: "/photos", page: () => UploadImgs()),
-  GetPage(name: "/profile", page: () => ProfilePage()),
-  GetPage(name: "/test", page: () => InfluencerProfilePage()),
+  GetPage(name: "/test", page: () => GalleryPage()),
+
+  GetPage(
+    name: '/comments/:postId',
+    page: () {
+      final postId = int.parse(Get.parameters['postId']!);
+      return CommentsPage(postId: postId);
+    },
+  ),
+
+  GetPage(
+    name: '/profile/:userid',
+    page: () {
+      final uid = int.parse(Get.parameters['userid']!);
+      return ProfilePage(userid: uid);
+    },
+  ),
 ];

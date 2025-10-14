@@ -3,14 +3,14 @@ class PostUser {
   final String firstname;
   final String? middlename;
   final String lastname;
-  final String avatar;
+  final bool display_img;
 
   PostUser({
     required this.id,
     required this.firstname,
     this.middlename,
     required this.lastname,
-    required this.avatar,
+    required this.display_img,
   });
 
   factory PostUser.fromJson(Map<String, dynamic> json) {
@@ -19,7 +19,7 @@ class PostUser {
       firstname: json["profile"]['firstname'],
       middlename: json["profile"]["middlename"],
       lastname: json["profile"]['lastname'],
-      avatar: json["profile"]["display_img"]["imgfile"],
+      display_img: json["profile"]["display_img"] == 0 ? false : true,
     );
   }
 
@@ -29,7 +29,7 @@ class PostUser {
       'firstname': firstname,
       'middlename': middlename,
       'lastname': lastname,
-      'avatar': avatar,
+      'display_img': display_img,
     };
   }
 }

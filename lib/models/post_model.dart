@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:exjam_prj/models/post_gallery.dart';
-
 import 'post_types_model.dart';
 import 'postuser_model.dart';
 
@@ -19,6 +17,8 @@ class Post {
   final dynamic galleryInfo;
   final dynamic eventInfo;
 
+  final int numOfComments;
+
   final int? reactionId;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -35,6 +35,8 @@ class Post {
     this.is_event,
     this.galleryInfo,
     this.eventInfo,
+
+    required this.numOfComments,
 
     this.reactionId,
     this.createdAt,
@@ -64,6 +66,8 @@ class Post {
       eventInfo: json['eventInfo'] != null
           ? jsonDecode(json['eventInfo'])
           : null,
+
+      numOfComments: json['numOfComments'],
 
       createdAt: json['created_at'] != null
           ? DateTime.tryParse(json['created_at'])

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class InfluencerProfilePage extends StatelessWidget {
-  const InfluencerProfilePage({super.key});
+class GalleryPage extends StatelessWidget {
+  const GalleryPage({super.key});
 
   @override
   Widget build(BuildContext context) {

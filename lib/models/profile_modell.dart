@@ -3,7 +3,6 @@ import 'dart:convert';
 
 class Profile {
   final int id;
-  final int userid;
   final String firstname;
   final String? middlename;
   final String lastname;
@@ -16,12 +15,9 @@ class Profile {
   final bool hasDisplayImg;
 
   final dynamic usrInfo;
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
 
   Profile({
     required this.id,
-    required this.userid,
     required this.firstname,
     this.middlename,
     required this.lastname,
@@ -34,40 +30,34 @@ class Profile {
     required this.hasDisplayImg,
 
     this.usrInfo,
-    this.createdAt,
-    this.updatedAt,
   });
 
   factory Profile.fromJson(Map<String, dynamic> json) {
     return Profile(
       id: json['id'],
-      userid: json['user_id'],
       firstname: json['firstname'],
-      middlename: json['middlename'] ?? '',
+      middlename: json['middlename'],
       lastname: json['lastname'],
       nickname: json['nickname'],
       occupation: json['occupation'],
       industry: json['industry'],
       jobSeeker: json['job_seeker'] == 1,
       skills: json['skills'],
+
+      // 👇 decode string to map if needed
       socials: json['socials'] is String
           ? Socials.fromJson(jsonDecode(json['socials']))
-          : Socials.fromJson(json['socials'] ?? {}),
-      hasDisplayImg: json['display_img'] == 1,
-      usrInfo: json['userinfo'],
-      createdAt: json['created_at'] != null
-          ? DateTime.tryParse(json['created_at'])
-          : null,
-      updatedAt: json['updated_at'] != null
-          ? DateTime.tryParse(json['updated_at'])
-          : null,
+          : Socials.fromJson(json['socials']),
+
+      hasDisplayImg: json['display_img'] == 1 ? true : false,
+
+      usrInfo: json['userinfo'].toString(),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'userid': userid,
       'firstname': firstname,
       'middlename': middlename,
       'lastname': lastname,
@@ -79,9 +69,7 @@ class Profile {
       'socials': socials.toJson(),
       'hasDisplayImg': hasDisplayImg,
 
-      'usrInfo': usrInfo,
-      'created_at': createdAt?.toIso8601String(),
-      'updated_at': updatedAt?.toIso8601String(),
+      'usrinfo': usrInfo,
     };
   }
 }

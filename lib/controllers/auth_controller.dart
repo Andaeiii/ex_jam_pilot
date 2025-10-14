@@ -1,9 +1,10 @@
+import 'package:exjam_prj/controllers/base_controller.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '../models/user_model.dart';
 import '../repos/auth_repository.dart';
 
-class AuthController extends GetxController {
+class AuthController extends BaseController {
   final AuthRepository _authRepository = AuthRepository();
   final storage = GetStorage(); // ✅ Storage instance
 
@@ -38,6 +39,10 @@ class AuthController extends GetxController {
       // ✅ Persist token
       storage.write("token", token.value);
       storage.write('userId', user.value?.id);
+
+      //persist the user and profile data also...
+      storage.write('usrcode', user.value?.toJson());
+
       Get.offAllNamed("/home");
     } catch (e) {
       errorMessage.value = e.toString();

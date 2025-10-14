@@ -1,14 +1,14 @@
 class Socials {
-  final String facebook;
-  final String twitter;
-  final String instagram;
-  final String linkedin;
+  final String? facebook;
+  final String? twitter;
+  final String? instagram;
+  final String? linkedin;
 
   Socials({
-    required this.facebook,
-    required this.twitter,
-    required this.instagram,
-    required this.linkedin,
+     this.facebook,
+     this.twitter,
+     this.instagram,
+     this.linkedin,
   });
 
   factory Socials.fromJson(Map<String, dynamic> json) {

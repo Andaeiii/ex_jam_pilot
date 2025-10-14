@@ -1,9 +1,10 @@
+import 'package:exjam_prj/controllers/base_controller.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '../repos/posts_repository.dart';
 import '../models/post_model.dart';
 
-class PostsController extends GetxController {
+class PostsController extends BaseController {
   final PostsRepository _postsRepository = PostsRepository();
   final GetStorage storage = GetStorage();
 

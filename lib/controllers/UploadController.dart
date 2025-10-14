@@ -1,9 +1,10 @@
 import 'dart:io';
+import 'package:exjam_prj/controllers/base_controller.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import '../apis/api_client.dart';
 
-class UploadController extends GetxController {
+class UploadController extends BaseController {
   final ImagePicker _picker = ImagePicker();
   final ApiClient apiClient = Get.put(ApiClient());
 

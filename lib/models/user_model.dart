@@ -3,6 +3,7 @@ class User {
   final String email;
   final int? squadronId;
   final String servNum;
+  final String usrcode;
   final DateTime? emailVerifiedAt;
   final String? rememberToken;
   final DateTime? createdAt;
@@ -13,6 +14,7 @@ class User {
     required this.email,
     this.squadronId,
     required this.servNum,
+    required this.usrcode,
     this.emailVerifiedAt,
     this.rememberToken,
     this.createdAt,
@@ -29,6 +31,7 @@ class User {
       emailVerifiedAt: json['email_verified_at'] != null
           ? DateTime.tryParse(json['email_verified_at'])
           : null,
+      usrcode: json['hashcode'],
       rememberToken: json['remember_token'],
       createdAt: json['created_at'] != null
           ? DateTime.tryParse(json['created_at'])
@@ -46,6 +49,7 @@ class User {
       'email': email,
       'squadron_id': squadronId,
       'serv_num': servNum,
+      'usrcode': usrcode,
       'email_verified_at': emailVerifiedAt?.toIso8601String(),
       'remember_token': rememberToken,
       'created_at': createdAt?.toIso8601String(),

@@ -10,8 +10,25 @@ import 'dart:convert';
 
 import '../imgComps/SlideShowPg.dart';
 
-class SocialWallPage extends StatelessWidget {
-  final PostsController controller = Get.put(PostsController());
+class SocialWallPage extends StatefulWidget {
+  @override
+  State<SocialWallPage> createState() => _SocialWallPageState();
+}
+
+class _SocialWallPageState extends State<SocialWallPage> {
+  late PostsController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.put(PostsController());
+  }
+
+  @override
+  void dispose() {
+    Get.delete<PostsController>();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +58,8 @@ class SocialWallPage extends StatelessWidget {
   }
 
   Widget _buildPostCard(Post post) {
+    int commentsCount = post.numOfComments;
+
     return Card(
       margin: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -50,11 +69,18 @@ class SocialWallPage extends StatelessWidget {
         children: [
           // Post header (avatar + name + time)
           ListTile(
-            leading: CircleAvatar(
-              backgroundImage: post.user != null
-                  ? NetworkImage(post.user!.avatar)
-                  : AssetImage("assets/images/default_avatar.png")
-                        as ImageProvider,
+            leading: GestureDetector(
+              onTap: () {
+                // Navigate to user profile
+                //print("Avatar tapped for userId: ${post.user?.id}");
+                Get.toNamed('/profile/${post.user!.id}');
+              },
+              child: CircleAvatar(
+                backgroundImage: post.user != null
+                    ? NetworkImage('$assetURL/images/avatar.jpg')
+                    : AssetImage("$assetURL/images/avatar.jpg")
+                          as ImageProvider,
+              ),
             ),
             title: Text(
               post.user != null
@@ -124,9 +150,13 @@ class SocialWallPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _buildActionButton(Icons.thumb_up_alt_outlined, "Like", () {}),
-                _buildActionButton(Icons.mode_comment_outlined, "Comment", () {
-                  Get.toNamed('/comments', arguments: {"postId": post.id});
-                }),
+                _buildActionButton(
+                  Icons.mode_comment_outlined,
+                  "Comment ($commentsCount)",
+                  () {
+                    Get.toNamed('/comments/${post.id}');
+                  },
+                ),
                 _buildActionButton(Icons.share_outlined, "Share", () {}),
               ],
             ),
@@ -150,7 +180,7 @@ class SocialWallPage extends StatelessWidget {
       children: [
         if (post.content?.isNotEmpty ?? false)
           Padding(
-            padding: const EdgeInsets.all(12.0),
+            padding: EdgeInsets.all(12.0),
             child: Text(post.content ?? '', style: TextStyle(fontSize: 16)),
           ),
         if (post.imagePath != null)
@@ -167,14 +197,13 @@ class SocialWallPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: EdgeInsets.all(12.0),
           child: Text(post.content ?? '', style: TextStyle(fontSize: 16)),
         ),
         if (post.imagePath != null)
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: NetworkImgLdr(imageUrl: post.imagePath!, fit: BoxFit.cover),
-
             //Image.network(post.imagePath!, fit: BoxFit.cover),
           ),
       ],
@@ -233,14 +262,14 @@ Widget _buildGallery(String jsonString) {
               return Container(
                 height: 150,
                 color: Colors.grey[200],
-                child: const Center(child: CircularProgressIndicator()),
+                child: Center(child: CircularProgressIndicator()),
               );
             },
             errorBuilder: (context, error, stackTrace) {
               return Container(
                 height: 150,
                 color: Colors.grey[300],
-                child: const Icon(Icons.broken_image, size: 50),
+                child: Icon(Icons.broken_image, size: 50),
               );
             },
           ),
