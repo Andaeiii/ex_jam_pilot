@@ -1,7 +1,12 @@
+import 'package:exjam_prj/controllers/profile_layout_controller.dart';
 import 'package:exjam_prj/utils/helpers/AppConfig.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class UserProfile extends StatelessWidget {
+import '../imgComps/SlideShowPg.dart';
+
+class UserProfile extends StatefulWidget {
+  final int userId;
   final String name;
   final String email;
   final String bio;
@@ -14,6 +19,7 @@ class UserProfile extends StatelessWidget {
 
   UserProfile({
     super.key,
+    required this.userId,
     required this.name,
     required this.email,
     required this.bio,
@@ -26,25 +32,55 @@ class UserProfile extends StatelessWidget {
   });
 
   @override
+  State<UserProfile> createState() => _UserProfileState();
+}
+
+class _UserProfileState extends State<UserProfile> {
+  late final UserProfileController controller;
+
+  final List<String> btnLabels = ['inbox', 'photos', 'Posts'];
+
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.put(UserProfileController());
+    controller.buildProfileTabs();
+  }
+
+  @override
+  void dispose() {
+    Get.delete<UserProfileController>();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      appBar: AppBar(title: Text('Profile'), centerTitle: true, elevation: 0),
+      appBar: AppBar(
+        title: Text('Ex-Jam Profile'),
+        // centerTitle: true,
+        elevation: 0,
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
             SizedBox(height: 20),
 
-            AppConfig.getDisplayImg(usrcode, size: 80, hasDP: profilePix),
+            AppConfig.getDisplayImg(
+              widget.usrcode,
+              size: 80,
+              hasDP: widget.profilePix,
+            ),
 
             SizedBox(height: 12),
 
             Text(
-              name,
+              widget.name,
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             Text(
-              email,
+              widget.email,
               style: TextStyle(
                 fontSize: 20,
                 color: Color.fromARGB(255, 48, 48, 48),
@@ -52,17 +88,7 @@ class UserProfile extends StatelessWidget {
             ),
             SizedBox(height: 5),
 
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Text(
-                bio,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 15,
-                  color: Color.fromARGB(255, 32, 31, 31),
-                ),
-              ),
-            ),
+            AppConfig.mkStatusMsg(widget.bio),
 
             SizedBox(height: 20),
 
@@ -70,35 +96,81 @@ class UserProfile extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildStatItem("Posts", posts),
-                _buildStatItem("Followers", followers),
-                _buildStatItem("Following", following),
+                _buildStatItem("Posts", widget.posts),
+                _buildStatItem("Followers", widget.followers),
+                _buildStatItem("Following", widget.following),
               ],
             ),
 
-            SizedBox(height: 25),
-            Divider(thickness: 1),
+            SizedBox(height: 15),
 
-            // --- Image Grid ---
             Padding(
-              padding: EdgeInsets.all(12),
-              child: GridView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: imageUrls.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  mainAxisSpacing: 4,
-                  crossAxisSpacing: 4,
-                ),
-                itemBuilder: (context, index) {
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.network(imageUrls[index], fit: BoxFit.cover),
+              padding: EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                children: btnLabels.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final label = entry.value;
+
+                  return Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        left: index == 0 ? 0 : 4,
+                        right: index == btnLabels.length - 1 ? 0 : 0,
+                      ),
+                      child: Obx(
+                        () => ElevatedButton(
+                          onPressed: () {
+                            controller.setCurItem(index);
+                            print('Selected: ${controller.curIndex.value}');
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: controller.curIndex.value == index
+                                ? Colors.blue
+                                : const Color.fromARGB(255, 255, 255, 255),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 8,
+                            ), // smaller height
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                          child: Text(
+                            label,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: controller.curIndex.value == index
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   );
-                },
+                }).toList(),
               ),
             ),
+
+            // --- Image Grid ---
+
+            // 📦 Reactive Section Content
+            Obx(() {
+              final index = controller.curIndex.value;
+
+              switch (index) {
+                case 0:
+                  return InboxSection(uid: widget.userId);
+
+                case 1:
+                  return PhotosSection(imageUrls: widget.imageUrls);
+
+                case 2:
+                  return PostsSection();
+
+                default:
+                  return SizedBox.shrink();
+              }
+            }),
           ],
         ),
       ),
@@ -115,6 +187,103 @@ class UserProfile extends StatelessWidget {
         SizedBox(height: 4),
         Text(label, style: TextStyle(color: Colors.grey[600])),
       ],
+    );
+  }
+}
+
+/////////////////////////////////////////////the inbox widget definitionss...............
+
+class InboxSection extends StatefulWidget {
+  final int uid;
+  const InboxSection({super.key, required this.uid});
+
+  @override
+  State<InboxSection> createState() => _InboxSectionState();
+}
+
+class _InboxSectionState extends State<InboxSection> {
+  late UserProfileController controller;
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.find<UserProfileController>();
+    controller.getUsersInbox();
+  }
+
+  @override
+  void dispose() {
+    Get.delete<UserProfileController>();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 200,
+      color: Colors.orange.shade100,
+      alignment: Alignment.center,
+      child: Text('📩 Inbox Section ${widget.uid}'),
+    );
+  }
+}
+
+class PhotosSection extends StatelessWidget {
+  final List<String> imageUrls;
+  const PhotosSection({super.key, required this.imageUrls});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(12),
+      child: Column(
+        children: [
+          GridView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: imageUrls.length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              mainAxisSpacing: 4,
+              crossAxisSpacing: 4,
+            ),
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTap: () {
+                  // 👇 Navigate to the slideshow gallery
+                  Get.to(
+                    () => SlideshowGallery(
+                      photos: imageUrls,
+                      initialIndex: index,
+                    ),
+                  );
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.network(imageUrls[index], fit: BoxFit.cover),
+                ),
+              );
+            },
+          ),
+
+          SizedBox(height: 5),
+          Divider(thickness: 0.5, color: Color.fromARGB(255, 255, 255, 255)),
+          AppConfig.mkStatusMsg('${imageUrls.length} photos only....'),
+        ],
+      ),
+    );
+  }
+}
+
+class PostsSection extends StatelessWidget {
+  const PostsSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 200,
+      color: Colors.blue.shade100,
+      alignment: Alignment.center,
+      child: Text('📝 Posts Section'),
     );
   }
 }

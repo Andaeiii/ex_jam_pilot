@@ -54,6 +54,7 @@ class _ProfilePageState extends State<ProfilePage> {
       var usrObj = p.usrInfo;
 
       return UserProfile(
+        userId: p.userid,
         name: "${p.firstname} ${p.lastname}",
         email: "${usrObj['servnum']}, ${usrObj['squadron']} Squadron",
         bio: "${p.occupation}/${p.industry}",

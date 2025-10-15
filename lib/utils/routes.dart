@@ -1,5 +1,6 @@
 import 'package:exjam_prj/views/pages/Comments.dart';
 import 'package:exjam_prj/views/pages/galleryPage.dart';
+import 'package:exjam_prj/views/comps/profiletabs.dart';
 import 'package:exjam_prj/views/pages/upload_img.dart';
 import 'package:get/get.dart';
 import '../views/pages/login.dart';
@@ -12,7 +13,7 @@ final List<GetPage<dynamic>> appRoutes = [
   GetPage(name: "/home", page: () => HomeScreen()),
 
   GetPage(name: "/photos", page: () => UploadImgs()),
-  GetPage(name: "/test", page: () => GalleryPage()),
+  GetPage(name: "/test", page: () => ProfileTabPage()),
 
   GetPage(
     name: '/comments/:postId',

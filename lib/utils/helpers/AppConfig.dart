@@ -31,6 +31,18 @@ class AppConfig {
     );
   }
 
+
+  static Widget mkStatusMsg(String msg) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      child: Text(
+        msg,
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 15, color: Color.fromARGB(255, 32, 31, 31)),
+      ),
+    );
+  }
+
   static Widget _defaultPlaceholder(double size, Color? backgroundColor) {
     return Container(
       width: size,

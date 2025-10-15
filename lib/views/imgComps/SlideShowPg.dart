@@ -50,9 +50,9 @@ class _SlideshowGalleryState extends State<SlideshowGallery> {
         backgroundColor: Colors.black,
         title: Text(
           isSingleImage ? "Photo" : "Gallery",
-          style: const TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.white),
         ),
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: Center(
         child: isSingleImage

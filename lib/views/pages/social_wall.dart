@@ -1,3 +1,4 @@
+import 'package:exjam_prj/utils/helpers/AppConfig.dart';
 import 'package:exjam_prj/views/comps/NetworkImgLdr.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
@@ -60,6 +61,9 @@ class _SocialWallPageState extends State<SocialWallPage> {
   Widget _buildPostCard(Post post) {
     int commentsCount = post.numOfComments;
 
+    String ucode = post.user?.usrcode ?? '';
+    bool dp = post.user?.display_img ?? false;
+
     return Card(
       margin: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -72,15 +76,9 @@ class _SocialWallPageState extends State<SocialWallPage> {
             leading: GestureDetector(
               onTap: () {
                 // Navigate to user profile
-                //print("Avatar tapped for userId: ${post.user?.id}");
                 Get.toNamed('/profile/${post.user!.id}');
               },
-              child: CircleAvatar(
-                backgroundImage: post.user != null
-                    ? NetworkImage('$assetURL/images/avatar.jpg')
-                    : AssetImage("$assetURL/images/avatar.jpg")
-                          as ImageProvider,
-              ),
+              child: AppConfig.getDisplayImg(ucode, hasDP: dp, size: 26),
             ),
             title: Text(
               post.user != null
@@ -133,7 +131,6 @@ class _SocialWallPageState extends State<SocialWallPage> {
           //_buildTextContent(post),
           _buildImageContent(post),
           if (post.postType?.title == "mixed") _buildMixedContent(post),
-
           if (post.galleryInfo != '') _buildGallery(post.galleryInfo),
           //     post.galleryInfo is List &&
           //     post.galleryInfo.length > 0)
@@ -145,7 +142,7 @@ class _SocialWallPageState extends State<SocialWallPage> {
             child: Divider(),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
+            padding: EdgeInsets.symmetric(horizontal: 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -153,9 +150,7 @@ class _SocialWallPageState extends State<SocialWallPage> {
                 _buildActionButton(
                   Icons.mode_comment_outlined,
                   "Comment ($commentsCount)",
-                  () {
-                    Get.toNamed('/comments/${post.id}');
-                  },
+                  () => Get.toNamed('/comments/${post.id}'),
                 ),
                 _buildActionButton(Icons.share_outlined, "Share", () {}),
               ],
